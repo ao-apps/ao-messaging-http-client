@@ -36,15 +36,15 @@ along with ao-messaging-http-client.  If not, see <http://www.gnu.org/licenses /
 	<packaging>jar</packaging>
 
 	<properties>
-		<bookPath>/${project.parent.artifactId}/base</bookPath>
-		<shortTitle>Base</shortTitle>
-		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="${project.parent.parent.url}">${project.parent.parent.name}</a>
-/ <a target="_top" href="${project.parent.url}">${project.parent.properties.shortTitle}</a>
+		<bookPath>/${project.parent.artifactId}/http/client</bookPath>
+		<shortTitle>Client</shortTitle>
+		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="${project.parent.url}">${project.parent.name}</a>
+/ <a target="_top" href="${project.parent.url}http/">HTTP</a>
 / <a target="_top" href="${project.url}">${shortTitle}</a>]]></javadoc.breadcrumbs>
 	</properties>
 
 	<name>AO Messaging HTTP Client</name>
-	<url>${project.parent.url}client/</url>
+	<url>${project.parent.url}http/client/</url>
 	<description>Client for asynchronous bidirectional messaging over HTTP.</description>
 	<inceptionYear>2014</inceptionYear>
 

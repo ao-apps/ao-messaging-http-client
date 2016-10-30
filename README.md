@@ -3,6 +3,7 @@ Client for asynchronous bidirectional messaging over HTTP.
 
 ## Project Links
 * [Project Home](https://www.aoindustries.com/ao-messaging/http/client/)
+* [Changelog](https://www.aoindustries.com/ao-messaging/http/client/changelog)
 * [API Docs](https://www.aoindustries.com/ao-messaging/http/client/apidocs/)
 * [Maven Central Repository](https://search.maven.org/#search%7Cgav%7C1%7Cg:%22com.aoindustries%22%20AND%20a:%22ao-messaging-http-client%22)
 * [GitHub](https://github.com/aoindustries/ao-messaging-http-client)

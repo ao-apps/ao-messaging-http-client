@@ -1,6 +1,6 @@
 /*
  * ao-messaging-http-client - Client for asynchronous bidirectional messaging over HTTP.
- * Copyright (C) 2014, 2015, 2016  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -75,11 +75,8 @@ public class HttpSocketClient extends HttpSocketContext {
 						// Build request bytes
 						AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
 						try {
-							DataOutputStream out = new DataOutputStream(bout);
-							try {
+							try (DataOutputStream out = new DataOutputStream(bout)) {
 								out.writeBytes("action=connect");
-							} finally {
-								out.close();
 							}
 						} finally {
 							bout.close();

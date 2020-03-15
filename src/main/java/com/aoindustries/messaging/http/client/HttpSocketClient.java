@@ -1,6 +1,6 @@
 /*
  * ao-messaging-http-client - Client for asynchronous bidirectional messaging over HTTP.
- * Copyright (C) 2014, 2015, 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,12 +22,12 @@
  */
 package com.aoindustries.messaging.http.client;
 
+import com.aoindustries.concurrent.Callback;
+import com.aoindustries.concurrent.Executors;
 import com.aoindustries.io.AoByteArrayOutputStream;
 import com.aoindustries.messaging.http.HttpSocket;
 import com.aoindustries.messaging.http.HttpSocketContext;
 import com.aoindustries.security.Identifier;
-import com.aoindustries.util.concurrent.Callback;
-import com.aoindustries.util.concurrent.Executors;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

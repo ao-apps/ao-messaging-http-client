@@ -67,68 +67,63 @@ public class HttpSocketClient extends HttpSocketContext {
 		final Callback<? super HttpSocket> onConnect,
 		final Callback<? super Exception> onError
 	) {
-		executors.getUnbounded().submit(
-			new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// Build request bytes
-						AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
-						try {
-							try (DataOutputStream out = new DataOutputStream(bout)) {
-								out.writeBytes("action=connect");
-							}
-						} finally {
-							bout.close();
-						}
-						long connectTime = System.currentTimeMillis();
-						URL endpointURL = new URL(endpoint);
-						HttpURLConnection conn = (HttpURLConnection)endpointURL.openConnection();
-						conn.setAllowUserInteraction(false);
-						conn.setConnectTimeout(CONNECT_TIMEOUT);
-						conn.setDoOutput(true);
-						conn.setFixedLengthStreamingMode(bout.size());
-						conn.setInstanceFollowRedirects(false);
-						conn.setReadTimeout(CONNECT_TIMEOUT);
-						conn.setRequestMethod("POST");
-						conn.setUseCaches(false);
-						// Write request
-						OutputStream out = conn.getOutputStream();
-						try {
-							out.write(bout.getInternalByteArray(), 0, bout.size());
-							out.flush();
-						} finally {
-							out.close();
-						}
-						// Get response
-						int responseCode = conn.getResponseCode();
-						if(responseCode != 200) throw new IOException("Unexpect response code: " + responseCode);
-						if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got connection");
-						DocumentBuilder builder = builderFactory.newDocumentBuilder();
-						Element document = builder.parse(conn.getInputStream()).getDocumentElement();
-						if(!"connection".equals(document.getNodeName())) throw new IOException("Unexpected root node name: " + document.getNodeName());
-						Identifier id = Identifier.valueOf(document.getAttribute("id"));
-						if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got id=" + id);
-						HttpSocket httpSocket = new HttpSocket(
-							HttpSocketClient.this,
-							id,
-							connectTime,
-							endpointURL
-						);
-						if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: adding socket");
-						addSocket(httpSocket);
-						if(onConnect!=null) {
-							if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onConnect");
-							onConnect.call(httpSocket);
-						}
-					} catch(Exception exc) {
-						if(onError!=null) {
-							if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onError");
-							onError.call(exc);
-						}
+		executors.getUnbounded().submit(() -> {
+			try {
+				// Build request bytes
+				AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
+				try {
+					try (DataOutputStream out = new DataOutputStream(bout)) {
+						out.writeBytes("action=connect");
 					}
+				} finally {
+					bout.close();
+				}
+				long connectTime = System.currentTimeMillis();
+				URL endpointURL = new URL(endpoint);
+				HttpURLConnection conn = (HttpURLConnection)endpointURL.openConnection();
+				conn.setAllowUserInteraction(false);
+				conn.setConnectTimeout(CONNECT_TIMEOUT);
+				conn.setDoOutput(true);
+				conn.setFixedLengthStreamingMode(bout.size());
+				conn.setInstanceFollowRedirects(false);
+				conn.setReadTimeout(CONNECT_TIMEOUT);
+				conn.setRequestMethod("POST");
+				conn.setUseCaches(false);
+				// Write request
+				OutputStream out = conn.getOutputStream();
+				try {
+					out.write(bout.getInternalByteArray(), 0, bout.size());
+					out.flush();
+				} finally {
+					out.close();
+				}
+				// Get response
+				int responseCode = conn.getResponseCode();
+				if(responseCode != 200) throw new IOException("Unexpect response code: " + responseCode);
+				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got connection");
+				DocumentBuilder builder = builderFactory.newDocumentBuilder();
+				Element document = builder.parse(conn.getInputStream()).getDocumentElement();
+				if(!"connection".equals(document.getNodeName())) throw new IOException("Unexpected root node name: " + document.getNodeName());
+				Identifier id = Identifier.valueOf(document.getAttribute("id"));
+				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got id=" + id);
+				HttpSocket httpSocket = new HttpSocket(
+					HttpSocketClient.this,
+					id,
+					connectTime,
+					endpointURL
+				);
+				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: adding socket");
+				addSocket(httpSocket);
+				if(onConnect!=null) {
+					if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onConnect");
+					onConnect.call(httpSocket);
+				}
+			} catch(Exception exc) {
+				if(onError!=null) {
+					if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onError");
+					onError.call(exc);
 				}
 			}
-		);
+		});
 	}
 }

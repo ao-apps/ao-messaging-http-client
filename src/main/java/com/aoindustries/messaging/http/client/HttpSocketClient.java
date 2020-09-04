@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Element;
 
@@ -41,7 +43,7 @@ import org.w3c.dom.Element;
  */
 public class HttpSocketClient extends HttpSocketContext {
 
-	private static final boolean DEBUG = false;
+	private static final Logger logger = Logger.getLogger(HttpSocketClient.class.getName());
 
 	private static final int CONNECT_TIMEOUT = 15 * 1000;
 
@@ -62,10 +64,11 @@ public class HttpSocketClient extends HttpSocketContext {
 	/**
 	 * Asynchronously connects.
 	 */
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
 	public void connect(
-		final String endpoint,
-		final Callback<? super HttpSocket> onConnect,
-		final Callback<? super Exception> onError
+		String endpoint,
+		Callback<? super HttpSocket> onConnect,
+		Callback<? super Throwable> onError
 	) {
 		executors.getUnbounded().submit(() -> {
 			try {
@@ -99,29 +102,47 @@ public class HttpSocketClient extends HttpSocketContext {
 				}
 				// Get response
 				int responseCode = conn.getResponseCode();
+				logger.log(Level.FINEST, "Got connection with response: {0}", responseCode);
 				if(responseCode != 200) throw new IOException("Unexpect response code: " + responseCode);
-				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got connection");
 				DocumentBuilder builder = builderFactory.newDocumentBuilder();
 				Element document = builder.parse(conn.getInputStream()).getDocumentElement();
 				if(!"connection".equals(document.getNodeName())) throw new IOException("Unexpected root node name: " + document.getNodeName());
 				Identifier id = Identifier.valueOf(document.getAttribute("id"));
-				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: got id=" + id);
+				logger.log(Level.FINEST, "Got id = ", id);
 				HttpSocket httpSocket = new HttpSocket(
 					HttpSocketClient.this,
 					id,
 					connectTime,
 					endpointURL
 				);
-				if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: adding socket");
+				logger.log(Level.FINEST, "Adding socket");
 				addSocket(httpSocket);
-				if(onConnect!=null) {
-					if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onConnect");
-					onConnect.call(httpSocket);
+				if(onConnect != null) {
+					logger.log(Level.FINE, "Calling onConnect: {0}", httpSocket);
+					try {
+						onConnect.call(httpSocket);
+					} catch(ThreadDeath td) {
+						throw td;
+					} catch(Throwable t) {
+						logger.log(Level.SEVERE, null, t);
+					}
+				} else {
+					logger.log(Level.FINE, "No onConnect: {0}", httpSocket);
 				}
-			} catch(Exception exc) {
-				if(onError!=null) {
-					if(DEBUG) System.out.println("DEBUG: HttpSocketClient: connect: calling onError");
-					onError.call(exc);
+			} catch(ThreadDeath td) {
+				throw td;
+			} catch(Throwable t) {
+				if(onError != null) {
+					logger.log(Level.FINE, "Calling onError", t);
+					try {
+						onError.call(t);
+					} catch(ThreadDeath td) {
+						throw td;
+					} catch(Throwable t2) {
+						logger.log(Level.SEVERE, null, t2);
+					}
+				} else {
+					logger.log(Level.FINE, "No onError", t);
 				}
 			}
 		});

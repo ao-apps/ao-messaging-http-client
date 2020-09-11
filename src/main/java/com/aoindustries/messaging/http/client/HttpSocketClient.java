@@ -25,6 +25,7 @@ package com.aoindustries.messaging.http.client;
 import com.aoindustries.concurrent.Callback;
 import com.aoindustries.concurrent.Executors;
 import com.aoindustries.io.AoByteArrayOutputStream;
+import com.aoindustries.lang.Throwables;
 import com.aoindustries.messaging.http.HttpSocket;
 import com.aoindustries.messaging.http.HttpSocketContext;
 import com.aoindustries.security.Identifier;
@@ -64,7 +65,7 @@ public class HttpSocketClient extends HttpSocketContext {
 	/**
 	 * Asynchronously connects.
 	 */
-	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
 	public void connect(
 		String endpoint,
 		Callback<? super HttpSocket> onConnect,
@@ -129,21 +130,20 @@ public class HttpSocketClient extends HttpSocketContext {
 				} else {
 					logger.log(Level.FINE, "No onConnect: {0}", httpSocket);
 				}
-			} catch(ThreadDeath td) {
-				throw td;
 			} catch(Throwable t) {
 				if(onError != null) {
 					logger.log(Level.FINE, "Calling onError", t);
 					try {
 						onError.call(t);
 					} catch(ThreadDeath td) {
-						throw td;
+						t = Throwables.addSuppressed(t, td);
 					} catch(Throwable t2) {
 						logger.log(Level.SEVERE, null, t2);
 					}
 				} else {
 					logger.log(Level.FINE, "No onError", t);
 				}
+				if(t instanceof ThreadDeath) throw (ThreadDeath)t;
 			}
 		});
 	}

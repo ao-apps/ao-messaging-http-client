@@ -58,7 +58,7 @@ public class HttpSocketClient extends HttpSocketContext {
 		try {
 			super.close();
 		} finally {
-			executors.dispose();
+			executors.close();
 		}
 	}
 

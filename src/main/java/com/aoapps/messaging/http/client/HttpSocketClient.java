@@ -50,9 +50,6 @@ public class HttpSocketClient extends HttpSocketContext {
 
 	private final Executors executors = new Executors();
 
-	public HttpSocketClient() {
-	}
-
 	@Override
 	public void close() {
 		try {

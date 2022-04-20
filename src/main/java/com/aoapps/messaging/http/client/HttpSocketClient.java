@@ -45,105 +45,111 @@ import org.w3c.dom.Element;
  */
 public class HttpSocketClient extends HttpSocketContext {
 
-	private static final Logger logger = Logger.getLogger(HttpSocketClient.class.getName());
+  private static final Logger logger = Logger.getLogger(HttpSocketClient.class.getName());
 
-	private static final int CONNECT_TIMEOUT = 15 * 1000;
+  private static final int CONNECT_TIMEOUT = 15 * 1000;
 
-	private final Executors executors = new Executors();
+  private final Executors executors = new Executors();
 
-	@Override
-	public void close() {
-		try {
-			super.close();
-		} finally {
-			executors.close();
-		}
-	}
+  @Override
+  public void close() {
+    try {
+      super.close();
+    } finally {
+      executors.close();
+    }
+  }
 
-	/**
-	 * Asynchronously connects.
-	 */
-	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
-	public void connect(
-		String endpoint,
-		Callback<? super HttpSocket> onConnect,
-		Callback<? super Throwable> onError
-	) {
-		executors.getUnbounded().submit(() -> {
-			try {
-				// Build request bytes
-				AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
-				try {
-					try (DataOutputStream out = new DataOutputStream(bout)) {
-						out.writeBytes("action=connect");
-					}
-				} finally {
-					bout.close();
-				}
-				long connectTime = System.currentTimeMillis();
-				URL endpointURL = new URL(endpoint);
-				HttpURLConnection conn = (HttpURLConnection)endpointURL.openConnection();
-				conn.setAllowUserInteraction(false);
-				conn.setConnectTimeout(CONNECT_TIMEOUT);
-				conn.setDoOutput(true);
-				conn.setFixedLengthStreamingMode(bout.size());
-				conn.setInstanceFollowRedirects(false);
-				conn.setReadTimeout(CONNECT_TIMEOUT);
-				conn.setRequestMethod("POST");
-				conn.setUseCaches(false);
-				// Write request
-				OutputStream out = conn.getOutputStream();
-				try {
-					out.write(bout.getInternalByteArray(), 0, bout.size());
-					out.flush();
-				} finally {
-					out.close();
-				}
-				// Get response
-				int responseCode = conn.getResponseCode();
-				logger.log(Level.FINEST, "Got connection with response: {0}", responseCode);
-				if(responseCode != 200) throw new IOException("Unexpect response code: " + responseCode);
-				DocumentBuilder builder = builderFactory.newDocumentBuilder();
-				Element document = builder.parse(conn.getInputStream()).getDocumentElement();
-				if(!"connection".equals(document.getNodeName())) throw new IOException("Unexpected root node name: " + document.getNodeName());
-				Identifier id = Identifier.valueOf(document.getAttribute("id"));
-				logger.log(Level.FINEST, "Got id = ", id);
-				HttpSocket httpSocket = new HttpSocket(
-					HttpSocketClient.this,
-					id,
-					connectTime,
-					endpointURL
-				);
-				logger.log(Level.FINEST, "Adding socket");
-				addSocket(httpSocket);
-				if(onConnect != null) {
-					logger.log(Level.FINE, "Calling onConnect: {0}", httpSocket);
-					try {
-						onConnect.call(httpSocket);
-					} catch(ThreadDeath td) {
-						throw td;
-					} catch(Throwable t) {
-						logger.log(Level.SEVERE, null, t);
-					}
-				} else {
-					logger.log(Level.FINE, "No onConnect: {0}", httpSocket);
-				}
-			} catch(Throwable t0) {
-				if(onError != null) {
-					logger.log(Level.FINE, "Calling onError", t0);
-					try {
-						onError.call(t0);
-					} catch(ThreadDeath td) {
-						t0 = Throwables.addSuppressed(td, t0);
-						assert t0 == td;
-					} catch(Throwable t2) {
-						logger.log(Level.SEVERE, null, t2);
-					}
-				} else {
-					logger.log(Level.FINE, "No onError", t0);
-				}
-				if(t0 instanceof ThreadDeath) throw (ThreadDeath)t0;
-			}
-		});
-	}
+  /**
+   * Asynchronously connects.
+   */
+  @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
+  public void connect(
+    String endpoint,
+    Callback<? super HttpSocket> onConnect,
+    Callback<? super Throwable> onError
+  ) {
+    executors.getUnbounded().submit(() -> {
+      try {
+        // Build request bytes
+        AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
+        try {
+          try (DataOutputStream out = new DataOutputStream(bout)) {
+            out.writeBytes("action=connect");
+          }
+        } finally {
+          bout.close();
+        }
+        long connectTime = System.currentTimeMillis();
+        URL endpointURL = new URL(endpoint);
+        HttpURLConnection conn = (HttpURLConnection)endpointURL.openConnection();
+        conn.setAllowUserInteraction(false);
+        conn.setConnectTimeout(CONNECT_TIMEOUT);
+        conn.setDoOutput(true);
+        conn.setFixedLengthStreamingMode(bout.size());
+        conn.setInstanceFollowRedirects(false);
+        conn.setReadTimeout(CONNECT_TIMEOUT);
+        conn.setRequestMethod("POST");
+        conn.setUseCaches(false);
+        // Write request
+        OutputStream out = conn.getOutputStream();
+        try {
+          out.write(bout.getInternalByteArray(), 0, bout.size());
+          out.flush();
+        } finally {
+          out.close();
+        }
+        // Get response
+        int responseCode = conn.getResponseCode();
+        logger.log(Level.FINEST, "Got connection with response: {0}", responseCode);
+        if (responseCode != 200) {
+          throw new IOException("Unexpect response code: " + responseCode);
+        }
+        DocumentBuilder builder = builderFactory.newDocumentBuilder();
+        Element document = builder.parse(conn.getInputStream()).getDocumentElement();
+        if (!"connection".equals(document.getNodeName())) {
+          throw new IOException("Unexpected root node name: " + document.getNodeName());
+        }
+        Identifier id = Identifier.valueOf(document.getAttribute("id"));
+        logger.log(Level.FINEST, "Got id = ", id);
+        HttpSocket httpSocket = new HttpSocket(
+          HttpSocketClient.this,
+          id,
+          connectTime,
+          endpointURL
+        );
+        logger.log(Level.FINEST, "Adding socket");
+        addSocket(httpSocket);
+        if (onConnect != null) {
+          logger.log(Level.FINE, "Calling onConnect: {0}", httpSocket);
+          try {
+            onConnect.call(httpSocket);
+          } catch (ThreadDeath td) {
+            throw td;
+          } catch (Throwable t) {
+            logger.log(Level.SEVERE, null, t);
+          }
+        } else {
+          logger.log(Level.FINE, "No onConnect: {0}", httpSocket);
+        }
+      } catch (Throwable t0) {
+        if (onError != null) {
+          logger.log(Level.FINE, "Calling onError", t0);
+          try {
+            onError.call(t0);
+          } catch (ThreadDeath td) {
+            t0 = Throwables.addSuppressed(td, t0);
+            assert t0 == td;
+          } catch (Throwable t2) {
+            logger.log(Level.SEVERE, null, t2);
+          }
+        } else {
+          logger.log(Level.FINE, "No onError", t0);
+        }
+        if (t0 instanceof ThreadDeath) {
+          throw (ThreadDeath)t0;
+        }
+      }
+    });
+  }
 }

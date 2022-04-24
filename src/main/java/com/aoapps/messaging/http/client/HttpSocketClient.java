@@ -65,9 +65,9 @@ public class HttpSocketClient extends HttpSocketContext {
    */
   @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "AssignmentToCatchBlockParameter"})
   public void connect(
-    String endpoint,
-    Callback<? super HttpSocket> onConnect,
-    Callback<? super Throwable> onError
+      String endpoint,
+      Callback<? super HttpSocket> onConnect,
+      Callback<? super Throwable> onError
   ) {
     executors.getUnbounded().submit(() -> {
       try {
@@ -82,7 +82,7 @@ public class HttpSocketClient extends HttpSocketContext {
         }
         long connectTime = System.currentTimeMillis();
         URL endpointURL = new URL(endpoint);
-        HttpURLConnection conn = (HttpURLConnection)endpointURL.openConnection();
+        HttpURLConnection conn = (HttpURLConnection) endpointURL.openConnection();
         conn.setAllowUserInteraction(false);
         conn.setConnectTimeout(CONNECT_TIMEOUT);
         conn.setDoOutput(true);
@@ -113,10 +113,10 @@ public class HttpSocketClient extends HttpSocketContext {
         Identifier id = Identifier.valueOf(document.getAttribute("id"));
         logger.log(Level.FINEST, "Got id = ", id);
         HttpSocket httpSocket = new HttpSocket(
-          HttpSocketClient.this,
-          id,
-          connectTime,
-          endpointURL
+            HttpSocketClient.this,
+            id,
+            connectTime,
+            endpointURL
         );
         logger.log(Level.FINEST, "Adding socket");
         addSocket(httpSocket);
@@ -147,7 +147,7 @@ public class HttpSocketClient extends HttpSocketContext {
           logger.log(Level.FINE, "No onError", t0);
         }
         if (t0 instanceof ThreadDeath) {
-          throw (ThreadDeath)t0;
+          throw (ThreadDeath) t0;
         }
       }
     });

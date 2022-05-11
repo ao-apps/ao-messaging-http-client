@@ -72,7 +72,7 @@ public class HttpSocketClient extends HttpSocketContext {
     executors.getUnbounded().submit(() -> {
       try {
         // Build request bytes
-        AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
+        final AoByteArrayOutputStream bout = new AoByteArrayOutputStream();
         try {
           try (DataOutputStream out = new DataOutputStream(bout)) {
             out.writeBytes("action=connect");
@@ -80,9 +80,9 @@ public class HttpSocketClient extends HttpSocketContext {
         } finally {
           bout.close();
         }
-        long connectTime = System.currentTimeMillis();
-        URL endpointURL = new URL(endpoint);
-        HttpURLConnection conn = (HttpURLConnection) endpointURL.openConnection();
+        final long connectTime = System.currentTimeMillis();
+        final URL endpointUrl = new URL(endpoint);
+        final HttpURLConnection conn = (HttpURLConnection) endpointUrl.openConnection();
         conn.setAllowUserInteraction(false);
         conn.setConnectTimeout(CONNECT_TIMEOUT);
         conn.setDoOutput(true);
@@ -92,12 +92,9 @@ public class HttpSocketClient extends HttpSocketContext {
         conn.setRequestMethod("POST");
         conn.setUseCaches(false);
         // Write request
-        OutputStream out = conn.getOutputStream();
-        try {
+        try (OutputStream out = conn.getOutputStream()) {
           out.write(bout.getInternalByteArray(), 0, bout.size());
           out.flush();
-        } finally {
-          out.close();
         }
         // Get response
         int responseCode = conn.getResponseCode();
@@ -116,7 +113,7 @@ public class HttpSocketClient extends HttpSocketContext {
             HttpSocketClient.this,
             id,
             connectTime,
-            endpointURL
+            endpointUrl
         );
         logger.log(Level.FINEST, "Adding socket");
         addSocket(httpSocket);

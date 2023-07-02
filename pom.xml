@@ -175,6 +175,11 @@ along with ao-messaging-http-client.  If not, see <https://www.gnu.org/licenses/
                       <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</outputDirectory>
                     </artifactItem>
                     <artifactItem>
+                      <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-messaging-base</outputDirectory>
+                    </artifactItem>
+                    <artifactItem>
                       <groupId>com.aoapps</groupId><artifactId>ao-messaging-http</artifactId><classifier>javadoc</classifier>
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-messaging-http</outputDirectory>
@@ -203,6 +208,10 @@ along with ao-messaging-http-client.  If not, see <https://www.gnu.org/licenses/
                   <location>${project.build.directory}/offlineLinks/com.aoapps/ao-lang</location>
                 </offlineLink>
                 <offlineLink>
+                  <url>https://oss.aoapps.com/messaging/base/apidocs/</url>
+                  <location>${project.build.directory}/offlineLinks/com.aoapps/ao-messaging-base</location>
+                </offlineLink>
+                <offlineLink>
                   <url>https://oss.aoapps.com/messaging/http/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.aoapps/ao-messaging-http</location>
                 </offlineLink>
@@ -228,6 +237,9 @@ along with ao-messaging-http-client.  If not, see <https://www.gnu.org/licenses/
         <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId><version>5.3.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
+        <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
+      </dependency>
+      <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-messaging-http</artifactId><version>3.1.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
@@ -242,9 +254,6 @@ along with ao-messaging-http-client.  If not, see <https://www.gnu.org/licenses/
       </dependency>
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-messaging-api</artifactId><version>3.1.0${POST-SNAPSHOT}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId><version>3.0.2${POST-SNAPSHOT}</version>
@@ -262,6 +271,9 @@ along with ao-messaging-http-client.  If not, see <https://www.gnu.org/licenses/
     </dependency>
     <dependency>
       <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId>
     </dependency>
     <dependency>
       <groupId>com.aoapps</groupId><artifactId>ao-messaging-http</artifactId>

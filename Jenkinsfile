@@ -33,6 +33,7 @@ def upstreamProjects = [
   // Direct
   '../concurrent', // <groupId>com.aoapps</groupId><artifactId>ao-concurrent</artifactId>
   '../lang', // <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
+  'base', // <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId>
   'http', // <groupId>com.aoapps</groupId><artifactId>ao-messaging-http</artifactId>
   '../security', // <groupId>com.aoapps</groupId><artifactId>ao-security</artifactId>
 ]

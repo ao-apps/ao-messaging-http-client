@@ -1,6 +1,6 @@
 /*
  * ao-messaging-http-client - Client for asynchronous bidirectional messaging over HTTP.
- * Copyright (C) 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -25,6 +25,7 @@ module com.aoapps.messaging.http.client {
   // Direct
   requires com.aoapps.concurrent; // <groupId>com.aoapps</groupId><artifactId>ao-concurrent</artifactId>
   requires com.aoapps.lang; // <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
+  requires com.aoapps.messaging.base; // <groupId>com.aoapps</groupId><artifactId>ao-messaging-base</artifactId>
   requires com.aoapps.messaging.http; // <groupId>com.aoapps</groupId><artifactId>ao-messaging-http</artifactId>
   requires com.aoapps.security; // <groupId>com.aoapps</groupId><artifactId>ao-security</artifactId>
   // Java SE

@@ -1,6 +1,6 @@
 /*
  * ao-messaging-http-client - Client for asynchronous bidirectional messaging over HTTP.
- * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -52,6 +52,7 @@ public class HttpSocketClient extends HttpSocketContext {
   private final Executors executors = new Executors();
 
   @Override
+  @SuppressWarnings("ConvertToTryWithResources")
   public void close() {
     try {
       super.close();

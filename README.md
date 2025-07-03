@@ -22,7 +22,7 @@ Client for asynchronous bidirectional messaging over HTTP.
 * [Project Home](https://oss.aoapps.com/messaging/http/client/)
 * [Changelog](https://oss.aoapps.com/messaging/http/client/changelog)
 * [API Docs](https://oss.aoapps.com/messaging/http/client/apidocs/)
-* [Maven Central Repository](https://central.sonatype.com/artifact/com.aoapps/ao-messaging-http-client)
+* [Central Repository](https://central.sonatype.com/artifact/com.aoapps/ao-messaging-http-client)
 * [GitHub](https://github.com/ao-apps/ao-messaging-http-client)
 
 ## Contact Us

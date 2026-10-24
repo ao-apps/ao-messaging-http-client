@@ -1,6 +1,6 @@
 /*
  * ao-messaging-http-client - Client for asynchronous bidirectional messaging over HTTP.
- * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2025  AO Industries, Inc.
+ * Copyright (C) 2014, 2015, 2016, 2019, 2020, 2021, 2022, 2025, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -125,7 +125,7 @@ public class HttpSocketClient extends HttpSocketContext {
           } catch (ThreadDeath td) {
             throw td;
           } catch (Throwable t) {
-            logger.log(Level.SEVERE, null, t);
+            logger.log(Level.SEVERE, "TODO: message here", t);
           }
         } else {
           logger.log(Level.FINE, "No onConnect: {0}", httpSocket);
@@ -139,7 +139,7 @@ public class HttpSocketClient extends HttpSocketContext {
             t0 = Throwables.addSuppressed(td, t0);
             assert t0 == td;
           } catch (Throwable t2) {
-            logger.log(Level.SEVERE, null, t2);
+            logger.log(Level.SEVERE, "TODO: message here", t2);
           }
         } else {
           logger.log(Level.FINE, "No onError", t0);
